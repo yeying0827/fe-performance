@@ -115,6 +115,12 @@
          }
        }
        ```
+       
+    4. 页面引用dll.js
+
+       ```html
+       <script src="./vendor/vendor.dll.js"></script>
+       ```
 
   * Happypack——将loader单进程转为多进程
 
