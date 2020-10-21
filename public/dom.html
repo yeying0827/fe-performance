@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>DOM优化原理与基本实践</title>
+</head>
+<body>
+	<div id="container"></div>
+	<script>
+		/*  case A
+		for (var i = 0; i < 10000; i++) {
+			document.getElementById('container').innerHTML += '<span>我是一个小测试</span>';
+		}
+		*/
+
+		/* case B
+		// 只获取一次container
+		let container = document.getElementById('container');
+		for (var i = 0; i < 10000; i++) {
+			container.innerHTML += '<span>我是一个小测试</span>';
+		}
+		*/
+
+		/* case C  5.7s*/
+		let container = document.getElementById('container');
+		let content = '';
+		for (var i = 0; i < 10000; i++) {
+			// 先对内容进行操作
+			content += '<span>我是一个小测试</span>';
+		}
+		// 内容处理好了，再触发DOM的操作
+		container.innerHTML = content;
+		
+
+		// case D 6.9s
+		/*let container = document.getElementById('container');
+		let content = document.createDocumentFragment();
+		for (var i = 0; i < 10000; i++) {
+			// 先对内容进行操作
+			let oSpan = document.createElement('span');
+			oSpan.innerHTML = '我是一个小测试';
+			content.append(oSpan);
+		}
+		// 内容处理好了，再触发DOM的操作
+		container.append(content);
+*/
+	</script>
+</body>
+</html>
