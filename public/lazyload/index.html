@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Lazy-Load</title>
+	<style type="text/css">
+		.img {
+			width: 200px;
+			height: 200px;
+			background-color: gray;
+		}
+		.pic {
+			/*一些必要样式*/
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="img"><img data-src="./images/1.jpg" alt="加载中" class="pic"></div>
+		<div class="img"><img data-src="./images/2.jpg" alt="加载中" class="pic"></div>
+		<div class="img"><img data-src="./images/3.jpg" alt="加载中" class="pic"></div>
+		<div class="img"><img data-src="./images/4.jpg" alt="加载中" class="pic"></div>
+		<div class="img"><img data-src="./images/5.jpg" alt="加载中" class="pic"></div>
+		<div class="img"><img data-src="./images/6.jpg" alt="加载中" class="pic"></div>
+		<div class="img"><img data-src="./images/7.jpg" alt="加载中" class="pic"></div>
+		<div class="img"><img data-src="./images/8.jpg" alt="加载中" class="pic"></div>
+		<div class="img"><img data-src="./images/9.jpg" alt="加载中" class="pic"></div>
+		<div class="img"><img data-src="./images/10.jpg" alt="加载中" class="pic"></div>
+	</div>
+	<script>
+		// 获取所有的图片标签
+		const imgs = document.getElementsByTagName('img');
+		// 获取当前可视区域高度， document.documentElement.clientHeight 兼容低版本ie
+		const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+		// 用于统计当前显示到了哪一张图片，避免每次都从第一张图片开始检查是否漏出
+		let num = 0;
+		function lazyload() {
+			for (let i = num; i < imgs.length; i++) {
+				// 用可视区域高度减去元素顶部距离可视区域顶部的高度
+				let distance = viewHeight - imgs[i].getBoundingClientRect().top
+				// 如果可视区域高度大于等于元素顶部距离可视区域顶部的高度，说明元素露出
+				if(distance >= 0) {
+					// 给元素写入真实的src，展示图片
+					imgs[i].src = imgs[i].getAttribute('data-src');
+					// 前i张图片已经加载完毕，下次从第i+1张开始检查是否露出
+					num = i+1;
+				}
+			}
+		}
+		// 监听scroll事件
+		window.addEventListener('scroll', lazyload, false);
+
+
+
+		/* 预加载？
+		const imgs = document.getElementsByTagName('img');
+		const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+		function lazyload(){
+			Array.prototype.forEach.call(imgs, item => {
+				let rect = item.getBoundingClientRect();
+				if(rect.bottom >= 0 && rect.top) {
+					let img = new Image();
+ 					img.src = item.getAttribute('data-src');
+ 					img.onload = ()=>{
+ 						item.src = img.src;
+ 						item.removeAttribute("data-src");
+ 					}
+ 				} else if(item.src === '') return;
+ 			})
+		}
+		lazyload();
+		window.addEventListener('scroll', lazyload);
+		*/
+	</script>
+</body>
+</html>
